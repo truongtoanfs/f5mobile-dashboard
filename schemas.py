@@ -11,7 +11,7 @@ class Product(BaseModel):
     description: str | None = None
     category_id: str
     subcategory_id: str | None = None
-    created_at: datetime | None = None
+    created_at: datetime
     updated_at: datetime | None = None
 
 
@@ -29,10 +29,10 @@ class SubCategory(BaseModel):
 class Category(BaseModel):
     id: str
     name: str
-    subcategories: list[SubCategory]
 
 
 class CategoryDetail(Category):
+    subcategories: list[SubCategory]
     products: list[Product]
 
 
