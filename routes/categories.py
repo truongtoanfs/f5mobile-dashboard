@@ -1,10 +1,10 @@
 from fastapi import APIRouter, HTTPException, status
 import httpx
 from schemas import ListCategory, CategoryDetail
+from config import settings
 
 router = APIRouter(prefix="/api", tags=["Category"])
-
-client = httpx.AsyncClient(base_url="http://127.0.0.1:8000/api")
+client = httpx.AsyncClient(base_url=settings.BACKEND_URL)
 
 
 @router.get("/categories", response_model=ListCategory)
