@@ -1,6 +1,6 @@
 services:
   backend:
-    image: f5mobile:latest
+    image: tf_01/f5mobile-dashboard:latest
     env_file:
       - .env
     ports:
