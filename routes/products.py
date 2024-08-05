@@ -1,4 +1,5 @@
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, HTTPException, status, Query
+from typing import Annotated
 import httpx
 from schemas import ProductList, Product
 from config import settings
@@ -9,15 +10,23 @@ client = httpx.AsyncClient(base_url=settings.BACKEND_URL)
 
 
 @router.get("/products", response_model=ProductList)
-async def list_product(limit: int = None, page: int = None, name: str = None):
+async def list_product(
+    name: str | None = None,
+    limit: Annotated[int, Query(gt=0)] = 100,
+    page: Annotated[int, Query(gt=0)] = 1,
+    sort_key: Annotated[str, Query(pattern="^(new_price|created_at|name|old_price|updated_at)$")] = "name",
+    order_by: Annotated[str, Query(pattern="^(desc|asc)$")] = "desc",
+):
     try:
-        params = {}
-        if limit is not None:
-            params["limit"] = limit
-        if page is not None:
-            params["page"] = page
-        if name is not None:
-            params["name"] = name
+        params = {
+            "name": name,
+            "limit": limit,
+            "page": page,
+            "sort_key": sort_key,
+            "order_by": order_by,
+        }
+        if name is None:
+            del params["name"]
 
         response = await client.get("/products", params=params)
         return response.json()
